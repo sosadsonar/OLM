@@ -21,7 +21,7 @@ ___
 ### How to decode file
 1. Just download files in the [Releases](https://github.com/sosadsonar/OLM/releases) section.
 1. Open CMD on Windows (or Terminal on Linux). Drag and drop the files into the command-line window.
-1. Drag and drop the encoded files into the command-line window (See [How to get encoded file](https://github.com/sosadsonar/OLM#how-to-get-encoded-file).
+1. Drag and drop the encoded files into the command-line window (See [How to get encoded file](https://github.com/sosadsonar/OLM#how-to-get-encoded-file)).
 1. Enjoy!!!
 
 ### How to get encoded file

@@ -21,7 +21,7 @@ ___
 ### Cách để giải mã tệp tin
 1. Tải xuống tệp tin ở trong phần [Releases](https://github.com/sosadsonar/OLM/releases).
 1. Mở CMD trên Windows (hoặc Terminal trên Linux). Kéo và thả tệp tin vào cửa sổ dòng lệnh.
-1. Kéo và thả tệp tin được mã hóa vào cửa sổ dòng lệnh (Xem ở phần [Cách để lấy tệp tin bị mã hóa](https://github.com/sosadsonar/OLM#cách-để-lấy-tệp-tin-bị-mã-hóa)).
+1. Kéo và thả tệp tin được mã hóa vào cửa sổ dòng lệnh (Xem ở phần [Cách để lấy tệp tin bị mã hóa](https://github.com/sosadsonar/OLM/blob/main/README-vi.md#c%C3%A1ch-%C4%91%E1%BB%83-l%E1%BA%A5y-t%E1%BB%87p-tin-b%E1%BB%8B-m%C3%A3-h%C3%B3a)).
 1. Tận hưởng!!!
 
 ### Cách để lấy tệp tin bị mã hóa
@@ -29,8 +29,8 @@ ___
 1. Vào Chế độ nhà phát triển, Ấn vào thẻ Mạng, ấn tổ hợp phím CTRL + R. Trên thanh tìm kiếm, nhập `get`.
 1. Ấn vào bất cứ bài kiểm tra nào cậu muốn lấy câu hỏi và đáp án.
 1. Sau đó ở Chế độ dành cho nhà phát triển, Ấn chuột phải vào `get-questions-of-ids`. Chọn Copy -> Copy response.
-1. Tạo một tệp tin text mới trển Windows (Mong cậu biết cách làm trên Linux!). Dán phần cậu vừa copy ở trên vào tệp tin vừa tạo.
-1. Bây giờ chúng ta đã có tệp mã hóa, tiến hành [giải mã](https://github.com/sosadsonar/OLM#cách-để-giải-mã-tệp-tin) thôi!
+1. Tạo một tệp tin text mới trển Windows (Mong cậu biết cách làm trên Linux!). Dán phần cậu vừa copy ở trên vào tệp tin vừa tạo rồi lưu lại dưới bất cứ tên nào mà cậu muốn.
+1. Bây giờ chúng ta đã có tệp mã hóa, tiến hành [giải mã](https://github.com/sosadsonar/OLM/blob/main/README-vi.md#c%C3%A1ch-%C4%91%E1%BB%83-gi%E1%BA%A3i-m%C3%A3-t%E1%BB%87p-tin) thôi!
 
 > [!NOTE]
 > Nếu cậu muốn xem điểm trước khi được công bố, vào chế độ dành cho Nhà Phát Triển, ấn vào thẻ Nguồn, ấn tổ hợp phím CTRL + F. Trên thanh tìm kiếm, nhập `score` và ấn Enter.
