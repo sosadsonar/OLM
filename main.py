@@ -52,12 +52,19 @@ def decode_file(fn, folder):
 
     # Open File and Read It
     with open(fn, "r") as file:
-        encodedQaAs = re.findall(r"(?<=content\":\").+?(?=\")", file.read())
+        encodedQaAs = re.findall(r"(?<=content\":\s\").+?(?=\")", file.read())
 
     # Check if file is valid
     if not encodedQaAs:
-        print("[Error] File is not supported! Exit.")
-        return
+        encodedQaAs = re.findall(r"(?<=content\":\").+?(?=\")", file.read())
+        
+        if not encodedQaAs:
+            print("[Error] File is not supported! Exit.")
+            return
+        
+        else:
+            print("[INFO] File supported! Start decoding.")
+            time.sleep(0.5)    
     else:
         print("[INFO] File supported! Start decoding.")
         time.sleep(0.5)
