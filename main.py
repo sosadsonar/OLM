@@ -59,18 +59,18 @@ def decode_file(fn, folder):
         print("[Error] File is not supported! Exit.")
         return
     else:
-        print("[INFO] File supported. Start decoding")
+        print("[INFO] File supported! Start decoding.")
         time.sleep(0.5)
     
     # Decode QaA then store it in a list
-    print("[INFO] Decoding questions and answers")
+    print("[INFO] Decoding questions and answers.")
     time.sleep(0.5)
     decodedQaAs = []
     for encodedQaA in encodedQaAs:
         decodedQaAs.append(html.unescape((base64.b64decode(encodedQaA)).decode("utf-8")))
 
     # Decode HTML and apply color format for correct answer
-    print("[INFO] Applying color format")
+    print("[INFO] Applying color format.")
     time.sleep(0.5)
     split = []
     questionNumber = 0
@@ -87,7 +87,7 @@ def decode_file(fn, folder):
     except FileExistsError:
         pass
     
-    print("[INFO] Writing to temporary file")
+    print("[INFO] Writing to temporary file.")
     time.sleep(0.5)
     os.chdir(folder)
     with open("decode.htm", "w", encoding="utf-8") as file2:
@@ -101,7 +101,7 @@ def decode_file(fn, folder):
 
 
 def decode_latex_file(input_file):
-    print("[INFO] Parsing LaTex")
+    print("[INFO] Parsing LaTex.")
     time.sleep(0.5)
     with open(input_file, "r", encoding="utf-8") as f:
         html_code = LatexNodes2Text().latex_to_text(f.read())
@@ -114,7 +114,7 @@ def decode_latex_file(input_file):
 
 
 def convert_htm_to_pdf(htm_file, pdf_file):
-    print("[INFO] Converting HTML file to PDF")
+    print("[INFO] Converting HTML file to PDF.")
     time.sleep(0.5)
     # Options for wkhtmltopdf
     options = {
@@ -123,7 +123,7 @@ def convert_htm_to_pdf(htm_file, pdf_file):
     
     get_cur_dir()
     pdfkit.from_file(htm_file, pdf_file, options = options, configuration=get_cur_dir())
-    print(f"[INFO] File decoded. Output file is in {os.path.abspath(os.curdir)}")
+    print(f"[INFO] File decoded. Output file is in {os.path.abspath(os.curdir)}.")
     # os.remove("decode.htm")
     
     
