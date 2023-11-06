@@ -124,7 +124,6 @@ def convert_htm_to_pdf(htm_file, pdf_file):
     get_cur_dir()
     pdfkit.from_file(htm_file, pdf_file, options = options, configuration=get_cur_dir())
     print(f"[INFO] File decoded. Output file is in {os.path.abspath(os.curdir)}.")
-    # os.remove("decode.htm")
     
     
 if __name__ == "__main__":
