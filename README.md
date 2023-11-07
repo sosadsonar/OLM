@@ -25,11 +25,12 @@ ___
 1. Enjoy!!!
 
 ### How to get encoded file
+(This tutorial is only for Chrome)
 1. Enter this link and log in (if you are not logged in yet): https://olm.vn/lop-hoc-cua-toi.
 1. Enter Developer Mode, click Network tab, Press down CTRL + R key. On the search bar, type `get`.
 1. Click on any test you want to get questions and answers.
 1. Then on the Developer Mode, right-click on the `get-questions-of-ids`. Select Copy -> Copy response.
-1. Create a New Text Document in your Windows (Hope you know how to do it on Linux!). Paste the copied response above and save the file with any name you want.
+1. Create a New Text Document in your Windows (You can find tutorial on the internet :wink:) (Hope you know how to do it on Linux!). Paste the copied response above and save the file with any name you want.
 1. Now that we have the encoded file, let's proceed to [decode](https://github.com/sosadsonar/OLM#how-to-decode-file) it.
 
 > [!NOTE]

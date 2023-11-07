@@ -9,10 +9,10 @@ import time
 from pylatexenc.latex2text import LatexNodes2Text
 
 
-# Get current binaries
+# Get current binaries.
 def get_cur_dir():
     cur_dir = os.path.dirname(os.path.abspath(__file__))
-    # Add wkhtmltopdf binaries
+    # Add wkhtmltopdf binaries.
     if sys.platform.startswith("linux"):
         path_wkhtmltopdf = os.path.join(cur_dir, "wkhtmltopdf")
         config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
@@ -28,9 +28,9 @@ def get_cur_dir():
         return
 
 
-# Handle path & folder
+# Handle path & folder.
 def create_arg_parser():
-    # Creates and returns the ArgumentParser object
+    # Creates and returns the ArgumentParser object.
     parser = argparse.ArgumentParser()
     parser.add_argument("inputDir", help="Path to the input directory.")
     parser.add_argument(
@@ -45,18 +45,19 @@ def create_arg_parser():
 def decode_file(fn, folder):
     # Decodes the given file and saves it as a HTML file in the given folder.
 
-    # Check if file exists
+    # Check if file exists.
     if not os.path.exists(fn):
         print("[Error] File not found! Exit.")
         return
 
-    # Open File and Read It
+    # Open File and Read It.
     with open(fn, "r") as file:
         encodedQaAs = re.findall(r"(?<=content\":\s\").+?(?=\")", file.read())
 
-    # Check if file is valid
+    # Check if file is valid.
     if not encodedQaAs:
-        encodedQaAs = re.findall(r"(?<=content\":\").+?(?=\")", file.read())
+        with open(fn, "r") as file:
+            encodedQaAs = re.findall(r"(?<=content\":\").+?(?=\")", file.read())
         
         if not encodedQaAs:
             print("[Error] File is not supported! Exit.")
@@ -69,14 +70,14 @@ def decode_file(fn, folder):
         print("[INFO] File supported! Start decoding.")
         time.sleep(0.5)
     
-    # Decode QaA then store it in a list
+    # Decode QaA then store it in a list.
     print("[INFO] Decoding questions and answers.")
     time.sleep(0.5)
     decodedQaAs = []
     for encodedQaA in encodedQaAs:
         decodedQaAs.append(html.unescape((base64.b64decode(encodedQaA)).decode("utf-8")))
 
-    # Decode HTML and apply color format for correct answer
+    # Decode HTML and apply color format for correct answer.
     print("[INFO] Applying color format.")
     time.sleep(0.5)
     split = []
@@ -88,7 +89,7 @@ def decode_file(fn, folder):
         else:
             split.append(re.sub(r"<li class=\"correctAnswer\">", "<li style=\"color:red\">", decodedQaA))
 
-    # Save
+    # Save.
     try:
         os.mkdir(folder)
     except FileExistsError:
@@ -104,26 +105,48 @@ def decode_file(fn, folder):
             questionNumber += 1
     
     # Decodes LaTeX encoding in a file.
-    decode_latex_file("decode.htm")
+    add_fraction_bar_for_fractions("decode.htm")
 
 
-def decode_latex_file(input_file):
-    print("[INFO] Parsing LaTex.")
+def add_fraction_bar_for_fractions(input_file):
+    # Add fraction bar for fractions.
+    fractions = []
+    
+    with open(input_file, "r", encoding="utf-8") as f:
+        orig_file = f.read()
+        fractions_sign = re.findall(r"(?<=\\dfrac).+?(?=\$)", orig_file)
+        if not fractions_sign:
+            parse_latex(input_file)
+            return
+        
+        else: 
+            fractions.append(re.sub(r"(?<=\})(?=\{)", r"/", orig_file))   
+    
+    with open(input_file, "w", encoding="utf-8") as f:
+        for i in fractions:
+            f.write(i)
+    
+    parse_latex(input_file)
+    
+
+def parse_latex(input_file):
+    print("[INFO] Parsing LaTex (if available).")
     time.sleep(0.5)
     with open(input_file, "r", encoding="utf-8") as f:
-        html_code = LatexNodes2Text().latex_to_text(f.read())
+        latex_code = f.read()
+        html_code = LatexNodes2Text().latex_to_text(latex_code)
 
     with open(input_file, "w", encoding="utf-8") as f:
-        f.write(html_code)
-    
-    # Convert the HTML file "input.htm" to the PDF file "output.pdf"
-    convert_htm_to_pdf("decode.htm", "Decoded.pdf")
+                f.write(html_code)
+          
+    # Convert the HTML file "input.htm" to the PDF file "output.pdf".
+    convert_htm_to_pdf(input_file, "Decoded.pdf")
 
 
 def convert_htm_to_pdf(htm_file, pdf_file):
     print("[INFO] Converting HTML file to PDF.")
     time.sleep(0.5)
-    # Options for wkhtmltopdf
+    # Options for wkhtmltopdf.
     options = {
         "encoding": "UTF-8"
     }
