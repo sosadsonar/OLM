@@ -137,7 +137,7 @@ def parse_latex(input_file):
         html_code = LatexNodes2Text().latex_to_text(latex_code)
 
     with open(input_file, "w", encoding="utf-8") as f:
-                f.write(html_code)
+        f.write(html_code)
           
     # Convert the HTML file "input.htm" to the PDF file "output.pdf".
     convert_htm_to_pdf(input_file, "Decoded.pdf")
@@ -154,6 +154,7 @@ def convert_htm_to_pdf(htm_file, pdf_file):
     get_cur_dir()
     pdfkit.from_file(htm_file, pdf_file, options = options, configuration=get_cur_dir())
     print(f"[INFO] File decoded. Output file is in {os.path.abspath(os.curdir)}.")
+    os.remove(htm_file)
     
     
 if __name__ == "__main__":
