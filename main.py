@@ -113,14 +113,13 @@ def add_fraction_bar_for_fractions(input_file):
     fractions = []
     
     with open(input_file, "r", encoding="utf-8") as f:
-        orig_file = f.read()
-        fractions_sign = re.findall(r"(?<=\\dfrac).+?(?=\$)", orig_file)
+        fractions_sign = re.findall(r"(?<=\\dfrac).+?(?=\$)", f.read())
         if not fractions_sign:
             parse_latex(input_file)
             return
         
         else: 
-            fractions.append(re.sub(r"(?<=\})(?=\{)", r"/", orig_file))   
+            fractions.append(re.sub(r"(?<=\})(?=\{)", r"/", f.read()))   
     
     with open(input_file, "w", encoding="utf-8") as f:
         for i in fractions:
@@ -154,9 +153,15 @@ def convert_htm_to_pdf(htm_file, pdf_file):
     get_cur_dir()
     pdfkit.from_file(htm_file, pdf_file, options = options, configuration=get_cur_dir())
     print(f"[INFO] File decoded. Output file is in {os.path.abspath(os.curdir)}.")
-    os.remove(htm_file)
     
+    try:
+        os.remove(htm_file)
+    except PermissionError:
+        print("[Warning] Cannot delete decode.htm file.")
+    else:
+        return
     
+       
 if __name__ == "__main__":
     arg_parser = create_arg_parser()
     parsed_args = arg_parser.parse_args(sys.argv[1:])
@@ -166,4 +171,3 @@ if __name__ == "__main__":
     else:
         folder = parsed_args.outputDir
     decode_file(fn, folder)
-
