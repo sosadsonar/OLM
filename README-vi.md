@@ -1,8 +1,18 @@
 # OLM
-<div align="center">[![en](https://img.shields.io/badge/Language-English-red.svg)](https://github.com/sosadsonar/OLM/blob/main/README.md)</div>
-<div align="right">![Static Badge](https://img.shields.io/badge/-Open%20in%20colab-orange?style=flat&logo=googlecolab&labelColor=5D5D5D&link=https%3A%2F%2Fcolab.research.google.com%2Fgithub%2Fsosadsonar%2FOLM%2Fblob%2Fmain%2FOLM.ipynb)</div>
+<div align="center">
+
+[![en](https://img.shields.io/badge/Language-English-red.svg)](https://github.com/sosadsonar/OLM/blob/main/README.md)
+
+</div>
 
 ___
+
+<div align="right">
+
+[![Static Badge](https://img.shields.io/badge/-Open%20in%20colab-orange?style=flat&logo=googlecolab&labelColor=5D5D5D)](https://colab.research.google.com/github/sosadsonar/OLM/blob/main/OLM.ipynb)
+
+</div>
+
 > [!Warning]
 > *Chỉ dành cho mục đích giáo dục!*
 >
