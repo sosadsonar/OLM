@@ -4,25 +4,13 @@
 [![en](https://img.shields.io/badge/Language-English-red.svg)](https://github.com/sosadsonar/OLM/blob/main/README.md)
 
 </div>
+<a href="https://colab.research.google.com/github/sosadsonar/OLM/blob/main/OLM.ipynb" target="_parent"><img align="right" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 
 ___
 > [!Warning]
 > *Chỉ dành cho mục đích giáo dục!*
 >
 > *Tớ không chịu trách nhiệm cho bất cứ rắc rối nào cậu gây ra!*
-
-> [!IMPORTANT]
-> *Nếu phần mềm diệt virus của cậu đánh giá các tệp tin trong phần [Releases](https://github.com/sosadsonar/OLM/releases) là trojan, thì đó chỉ là giả.*
->
-> *Để giải quyết vấn đề, đơn giản là thêm những tệp tin đó vào mục loại trừ trong phần mềm diệt virus của cậu.*
->
-> *Nếu cậu không tin tớ, phần này không dành cho cậu.*
-
-### Cách để giải mã tệp tin
-1. Tải xuống tệp tin ở trong phần [Releases](https://github.com/sosadsonar/OLM/releases).
-1. Mở CMD trên Windows (hoặc Terminal trên Linux). Kéo và thả tệp tin vào cửa sổ dòng lệnh.
-1. Kéo và thả tệp tin được mã hóa vào cửa sổ dòng lệnh (Xem ở phần [Cách để lấy tệp tin bị mã hóa](https://github.com/sosadsonar/OLM/blob/main/README-vi.md#c%C3%A1ch-%C4%91%E1%BB%83-l%E1%BA%A5y-t%E1%BB%87p-tin-b%E1%BB%8B-m%C3%A3-h%C3%B3a)).
-1. Tận hưởng!!!
 
 ### Cách để lấy tệp tin bị mã hóa
 (Hướng dẫn chỉ dành cho trình duyệt Chrome)
@@ -37,5 +25,4 @@ ___
 > Nếu cậu muốn xem điểm trước khi được công bố, vào chế độ dành cho Nhà Phát Triển, ấn vào thẻ Nguồn, ấn tổ hợp phím CTRL + F. Trên thanh tìm kiếm, nhập `score` và ấn Enter.
 >
 > Thông thường, giá trị cậu cần tìm là `"tn_score"`.
-### Tham gia cùng tớ
-[![](https://dcbadge.vercel.app/api/server/QDFYDXAaCV?style=social)](https://discord.gg/QDFYDXAaCV)
+
