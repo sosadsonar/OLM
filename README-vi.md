@@ -1,10 +1,6 @@
 # OLM
-<div align="center">
-
-[![en](https://img.shields.io/badge/Language-English-red.svg)](https://github.com/sosadsonar/OLM/blob/main/README.md)
-
-</div>
-<a href="https://colab.research.google.com/github/sosadsonar/OLM/blob/main/OLM.ipynb" target="_parent"><img align="right" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+<div align="center">[![en](https://img.shields.io/badge/Language-English-red.svg)](https://github.com/sosadsonar/OLM/blob/main/README.md)</div>
+<div align="right">![Static Badge](https://img.shields.io/badge/-Open%20in%20colab-orange?style=flat&logo=googlecolab&labelColor=5D5D5D&link=https%3A%2F%2Fcolab.research.google.com%2Fgithub%2Fsosadsonar%2FOLM%2Fblob%2Fmain%2FOLM.ipynb)</div>
 
 ___
 > [!Warning]
