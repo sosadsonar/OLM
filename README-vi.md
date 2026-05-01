@@ -27,7 +27,7 @@ ___
 1.  Truy cập vào mục **Releases** của kho lưu trữ này.
 2.  Chọn phiên bản mới nhất và nhấn vào tệp có đuôi `.user.js` để bắt đầu.
 3.  Cửa sổ xác nhận của Tampermonkey sẽ xuất hiện; nhấn **Install** (Cài đặt) để hoàn tất.
-4.  **Liên kết cài đặt nhanh:** [Nhấn vào đây để cài đặt](https://github.com/sosadsonar/OLM/releases/download/OLM%237/OLM.Auto.Solver-1.0.0-260501.user.js)
+4.  **Liên kết cài đặt nhanh:** [Nhấn vào đây để cài đặt](https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js)
 
 ---
 
