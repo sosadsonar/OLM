@@ -29,7 +29,8 @@ To ensure userscripts execute correctly on your browser, please refer to the off
 3. Setup
 Navigate to the Releases section of this repository.  
 Select the latest version and click the script file to install.  
-A Tampermonkey installation prompt will appear; click Install to proceed.
+A Tampermonkey installation prompt will appear; click Install to proceed.  
+Or click [here](https://github.com/sosadsonar/OLM/releases/download/OLM%237/OLM.Auto.Solver-1.0.0-260501.user.js).
 
 
 ### 📖 Usage
