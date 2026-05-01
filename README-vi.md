@@ -20,7 +20,7 @@ ___
 ### 🚀 Hướng dẫn cài đặt
 1. Yêu cầu bắt buộc
 Bạn cần cài đặt một trình quản lý userscript trên trình duyệt của mình:  
-Khuyên dùng: [Tampermonkey](https://www.tampermonkey.net/)
+Khuyên dùng: [Tampermonkey](https://www.tampermonkey.net/)  
 Lưu ý: Độ tương thích với các tiện ích khác (như GreasyFork) hiện chưa được kiểm thử chính thức.  
 
 2. Cấu hình trình duyệt
