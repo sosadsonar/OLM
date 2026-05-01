@@ -13,22 +13,32 @@ ___
 
 </div>
 
-> [!Warning]
-> *Chỉ dành cho mục đích giáo dục!*
->
-> *Tớ không chịu trách nhiệm cho bất cứ rắc rối nào cậu gây ra!*
+### ⚖️ Miễn trừ trách nhiệm pháp lý
+> [!IMPORTANT]
+> Công cụ này được cung cấp hoàn toàn cho mục đích giáo dục và nghiên cứu. Tác giả không chịu bất kỳ trách nhiệm nào đối với việc lạm dụng, mất dữ liệu hoặc các hành động vi phạm Điều khoản dịch vụ của bên thứ ba. Người dùng hoàn toàn chịu trách nhiệm về mọi rủi ro khi sử dụng phần mềm này.
 
-### Cách để lấy tệp tin bị mã hóa
-(Hướng dẫn chỉ dành cho trình duyệt Chrome)
-1. Ấn vào đường link này và đăng nhập (nếu cậu chưa đăng nhập): https://olm.vn/lop-hoc-cua-toi.
-1. Vào Chế độ nhà phát triển, Ấn vào thẻ Mạng, ấn tổ hợp phím CTRL + R. Trên thanh tìm kiếm, nhập `get`.
-1. Ấn vào bất cứ bài kiểm tra nào cậu muốn lấy câu hỏi và đáp án.
-1. Sau đó ở Chế độ dành cho nhà phát triển, Ấn chuột phải vào `get-questions-of-ids`. Chọn Copy -> Copy response.
-1. Tạo một tệp tin text mới trên Windows (Không biết có thể tra mạng nha :wink:) (Mong cậu biết cách làm trên Linux!). Dán phần cậu vừa copy ở trên vào tệp tin vừa tạo rồi lưu lại dưới bất cứ tên nào mà cậu muốn.
-1. Bây giờ chúng ta đã có tệp mã hóa, tiến hành [giải mã](https://github.com/sosadsonar/OLM/blob/main/README-vi.md#c%C3%A1ch-%C4%91%E1%BB%83-gi%E1%BA%A3i-m%C3%A3-t%E1%BB%87p-tin) thôi!
+### 🚀 Hướng dẫn cài đặt
+1. Yêu cầu bắt buộc
+Bạn cần cài đặt một trình quản lý userscript trên trình duyệt của mình:  
+Khuyên dùng: Tampermonkey
+Lưu ý: Độ tương thích với các tiện ích khác (như GreasyFork) hiện chưa được kiểm thử chính thức.  
+
+2. Cấu hình trình duyệt
+Để đảm bảo các userscript có thể thực thi chính xác, vui lòng tham khảo hướng dẫn chính thức từ Tampermonkey về việc cấp quyền cho script: Xem FAQ tại đây.
+
+3. Các bước thiết lập
+Truy cập vào mục Releases của kho lưu trữ này.  
+Chọn phiên bản mới nhất và nhấn vào tệp script để bắt đầu cài đặt.  
+Một cửa sổ xác nhận của Tampermonkey sẽ hiện ra; nhấn Install (Cài đặt) để hoàn tất.
+
+### 📖 Hướng dẫn sử dụng
+Sau khi cài đặt thành công, giao diện của công cụ sẽ xuất hiện ở góc trên bên phải trình duyệt khi bạn truy cập vào cổng thi của OLM. 
 
 > [!NOTE]
-> Nếu cậu muốn xem điểm trước khi được công bố, vào chế độ dành cho Nhà Phát Triển, ấn vào thẻ Nguồn, ấn tổ hợp phím CTRL + F. Trên thanh tìm kiếm, nhập `score` và ấn Enter.
->
-> Thông thường, giá trị cậu cần tìm là `"tn_score"`.
+> Cách xem điểm bị ẩn:
+> Trong trường hợp điểm số không hiển thị sau khi hoàn thành bài thi, bạn có thể kiểm tra thủ công thông qua Công cụ dành cho nhà phát triển (Developer Tools):  
+> Mở Chế độ nhà phát triển (nhấn F12 hoặc Ctrl + Shift + I).  
+> Chuyển sang tab Sources.  
+> Nhấn tổ hợp phím Ctrl + F để mở thanh tìm kiếm.  
+> Nhập từ khóa score hoặc tìm kiếm chính xác giá trị liên quan đến biến "tn_score".
 

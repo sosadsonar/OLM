@@ -13,22 +13,34 @@ ___
 
 </div>
 
-> [!WARNING]
-> *This is for educational purposes only!*
->
-> *I am not responsible for any trouble you make!*
+### ⚖️ Legal Disclaimer
+> [!IMPORTANT]
+> This tool is provided strictly for educational and research purposes. The author assumes no liability for potential misuse, data loss, or any actions that may violate third-party Terms of Service. Users assume all responsibility for their use of this software.
 
-### How to get encoded file
-(This tutorial is only for Chrome)
-1. Enter this link and log in (if you are not logged in yet): https://olm.vn/lop-hoc-cua-toi.
-1. Enter Developer Mode, click Network tab, Press down CTRL + R key. On the search bar, type `get`.
-1. Click on any test you want to get questions and answers.
-1. Then on the Developer Mode, right-click on the `get-questions-of-ids`. Select Copy -> Copy response.
-1. Create a New Text Document in your Windows (You can find tutorial on the internet :wink:) (Hope you know how to do it on Linux!). Paste the copied response above and save the file with any name you want.
-1. Now that we have the encoded file, let's proceed to [decode](https://github.com/sosadsonar/OLM#how-to-decode-file) it.
+### 🚀 Installation
+1. Prerequisites
+You must have a userscript manager installed in your browser.  
+Recommended: Tampermonkey  
+Compatibility with other user script extension is currently untested.
+
+2. Browser Configuration
+To ensure userscripts execute correctly on your browser, please refer to the official Tampermonkey FAQ regarding script permissions.
+
+3. Setup
+Navigate to the Releases section of this repository.  
+Select the latest version and click the script file to install.  
+A Tampermonkey installation prompt will appear; click Install to proceed.
+
+
+### 📖 Usage
+Once installed, the tool's interface will appear in the upper-right corner of your browser while navigating the OLM exam portal.
 
 > [!NOTE]
-> If you want to get score after finishing your test just enter Developer Mode, click Sources tab, Press down CTRL + F key. On the search bar, type `score` and press down Enter.
->[
-> Normally, that value is `"tn_score"`.
+> Viewing Hidden Scores:
+> If your score remains hidden after completing a test, you can manually retrieve it via the browser's Developer Tools:  
+> Open Developer Mode (F12 or Ctrl + Shift + I).  
+> Navigate to the Sources tab.  
+> Press Ctrl + F to open the search bar.  
+> Search for the term score or specifically identify the value associated with "tn_score".
+
 
