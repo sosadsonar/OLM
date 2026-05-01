@@ -24,7 +24,7 @@ Recommended: Tampermonkey
 Compatibility with other user script extension is currently untested.
 
 2. Browser Configuration
-To ensure userscripts execute correctly on your browser, please refer to the official Tampermonkey FAQ regarding script permissions.
+To ensure userscripts execute correctly on your browser, please refer to the official [Tampermonkey FAQ](https://www.tampermonkey.net/faq.php?locale=en&q=Q209) regarding script permissions.
 
 3. Setup
 Navigate to the Releases section of this repository.  
