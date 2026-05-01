@@ -20,7 +20,7 @@ ___
 ### 🚀 Installation
 1. Prerequisites
 You must have a userscript manager installed in your browser.  
-Recommended: Tampermonkey  
+Recommended: [Tampermonkey](https://www.tampermonkey.net/)
 Compatibility with other user script extension is currently untested.
 
 2. Browser Configuration
