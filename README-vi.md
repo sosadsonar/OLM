@@ -24,7 +24,7 @@ Khuyên dùng: Tampermonkey
 Lưu ý: Độ tương thích với các tiện ích khác (như GreasyFork) hiện chưa được kiểm thử chính thức.  
 
 2. Cấu hình trình duyệt
-Để đảm bảo các userscript có thể thực thi chính xác, vui lòng tham khảo [hướng dẫn chính thức từ Tampermonkey](https://www.tampermonkey.net/faq.php?locale=en&q=Q209) về việc cấp quyền cho script: Xem FAQ tại đây.
+Để đảm bảo các userscript có thể thực thi chính xác, vui lòng tham khảo [hướng dẫn chính thức từ Tampermonkey](https://www.tampermonkey.net/faq.php?locale=en&q=Q209) về việc cấp quyền cho script.
 
 3. Các bước thiết lập
 Truy cập vào mục Releases của kho lưu trữ này.  
