@@ -15,6 +15,7 @@ ___
 
 ### 🚀 Hướng dẫn cài đặt
 #### **PC**
+[Hướng dẫn](https://drive.google.com/file/d/1OLtmIXBKS7GJlUweoAigS0p7rM_RmjTX/view?usp=drive_link)
 #### 1. Yêu cầu hệ thống
 Để thực thi script, bạn cần cài đặt một trình quản lý userscript trên trình duyệt:
 *   **Khuyên dùng:** [Tampermonkey](https://www.tampermonkey.net/)
@@ -32,6 +33,7 @@ ___
 ---
 
 #### **Thiết bị di động**
+[Hướng dẫn](https://drive.google.com/file/d/1oEU99GydArQkhTU-gabVLnoBWVIBWrMb/view?usp=drive_link)  
 Để triển khai công cụ trên điện thoại:
 1.  Cài đặt trình duyệt **Firefox**.
 2.  Cài đặt tiện ích mở rộng **Tampermonkey** thông qua mục Add-ons của Firefox.
