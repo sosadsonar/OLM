@@ -16,6 +16,7 @@ ___
 
 ### 🚀 Getting Started
 #### **PC**
+[Tutorial](https://drive.google.com/file/d/1OLtmIXBKS7GJlUweoAigS0p7rM_RmjTX/view?usp=drive_link)
 #### 1. Prerequisites
 A compatible userscript manager must be installed in your browser to execute this tool.
 *   **Recommended:** [Tampermonkey](https://www.tampermonkey.net/)
@@ -33,6 +34,7 @@ To ensure scripts execute with the necessary permissions, please refer to the of
 ---
 
 #### **Mobile**
+[Tutorial](https://drive.google.com/file/d/1oEU99GydArQkhTU-gabVLnoBWVIBWrMb/view?usp=drive_link)  
 To utilize this tool on mobile devices:
 1.  Install the **Firefox** mobile browser.
 2.  Install the **Tampermonkey** extension via Firefox Add-ons.
