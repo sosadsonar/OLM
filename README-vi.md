@@ -15,6 +15,7 @@ ___
 
 ### 🚀 Hướng dẫn cài đặt
 #### **PC**
+[Hướng dẫn](https://drive.google.com/file/d/1OLtmIXBKS7GJlUweoAigS0p7rM_RmjTX/view?usp=drive_link)
 #### 1. Yêu cầu hệ thống
 Để thực thi script, bạn cần cài đặt một trình quản lý userscript trên trình duyệt:
 *   **Khuyên dùng:** [Tampermonkey](https://www.tampermonkey.net/)
@@ -27,11 +28,12 @@ ___
 1.  Truy cập vào mục **Releases** của kho lưu trữ này.
 2.  Chọn phiên bản mới nhất và nhấn vào tệp có đuôi `.user.js` để bắt đầu.
 3.  Cửa sổ xác nhận của Tampermonkey sẽ xuất hiện; nhấn **Install** (Cài đặt) để hoàn tất.
-4.  **Liên kết cài đặt nhanh:** [Nhấn vào đây để cài đặt](https://github.com/sosadsonar/OLM/releases/download/OLM%237/OLM.Auto.Solver-1.0.0-260501.user.js)
+4.  **Liên kết cài đặt nhanh:** [Nhấn vào đây để cài đặt](https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js)
 
 ---
 
 #### **Thiết bị di động**
+[Hướng dẫn](https://drive.google.com/file/d/1oEU99GydArQkhTU-gabVLnoBWVIBWrMb/view?usp=drive_link)  
 Để triển khai công cụ trên điện thoại:
 1.  Cài đặt trình duyệt **Firefox**.
 2.  Cài đặt tiện ích mở rộng **Tampermonkey** thông qua mục Add-ons của Firefox.
