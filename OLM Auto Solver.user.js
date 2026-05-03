@@ -51,7 +51,7 @@
         ui.style = "position: fixed; top: 20px; right: 20px; z-index: 10000; font-family: sans-serif; touch-action: none; user-select: none;";
         ui.innerHTML = `
             <div id="h-drag" style="background: #1B5E20; color: white; padding: 12px; border-radius: 8px 8px 0 0; cursor: move; display: flex; justify-content: space-between; align-items: center; min-width: 210px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.1.6</span>
+                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.1.1</span>
                 <span id="min-btn" style="cursor: pointer; padding: 0 5px;">−</span>
             </div>
             <div id="h-body" style="background: white; border: 1px solid #1B5E20; border-top: none; border-radius: 0 0 8px 8px; padding: 15px;">
