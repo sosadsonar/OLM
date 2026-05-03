@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         OLM Auto Solver
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.1.1
 // @updateURL    https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
 // @downloadURL  https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
-// @description  Cho phép chuyển tab + Tự động giải tất cả các loại câu hỏi trừ tự luận.
+// @description  Chống phát hiện chuyển tab. Tự động giải các dạng bài tập trên OLM (Trắc nghiệm, Điền từ, Đúng sai). Hỗ trợ tốt câu hỏi hỗn hợp (Mixed).
 // @author       Sonarx + Gemini
 // @match        *://olm.vn/*
 // @grant        none
@@ -16,6 +16,7 @@
 
     const XOR_KEY = "1047823200";
     const solutionMap = new Map();
+    const skillMap = new Map(); 
     const capturedBosses = new Map();
     let isAutoSolveEnabled = false;
     let hasTriggeredLoad = false;
@@ -26,7 +27,7 @@
     Object.defineProperty(document, 'hidden', { get: () => false });
     window.addEventListener('blur', e => e.stopImmediatePropagation(), true);
 
-    // --- 1. HOOK BOSS ---
+    // --- 1. HOOK BOSS ENGINE ---
     const hookOLM = () => {
         const originalDetect = window.detectQuestion;
         if (typeof originalDetect !== 'function') return;
@@ -36,35 +37,31 @@
             try {
                 const qId = (Boss && Boss.id_quiz) ? Boss.id_quiz.toString() :
                             (Boss && Boss.save_data && Boss.save_data.idq ? Boss.save_data.idq.toString() : null);
-
-                if (qId && Boss) {
-                    capturedBosses.set(qId, Boss);
-                    console.log(`%c[BOSS SYNC] ID: ${qId} đã sẵn sàng tham số.`, "color: #00BCD4; font-weight: bold;");
-                }
+                if (qId && Boss) capturedBosses.set(qId, Boss);
             } catch (e) {}
             return Boss;
         };
     };
 
-    // --- 2. GIAO DIỆN KÉO THẢ ---
+    // --- 2. UI ---
     function createUI() {
         if (document.getElementById('olm-solver-ui')) return;
         const ui = document.createElement('div');
         ui.id = "olm-solver-ui";
         ui.style = "position: fixed; top: 20px; right: 20px; z-index: 10000; font-family: sans-serif; touch-action: none; user-select: none;";
         ui.innerHTML = `
-            <div id="h-drag" style="background: #2E7D32; color: white; padding: 12px; border-radius: 8px 8px 0 0; cursor: move; display: flex; justify-content: space-between; align-items: center; min-width: 210px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.0.0</span>
+            <div id="h-drag" style="background: #1B5E20; color: white; padding: 12px; border-radius: 8px 8px 0 0; cursor: move; display: flex; justify-content: space-between; align-items: center; min-width: 210px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.1.6</span>
                 <span id="min-btn" style="cursor: pointer; padding: 0 5px;">−</span>
             </div>
-            <div id="h-body" style="background: white; border: 1px solid #2E7D32; border-top: none; border-radius: 0 0 8px 8px; padding: 15px;">
-                <div id="h-status" style="font-size: 11px; color: #555; text-align: center; margin-bottom: 10px;">Đang chờ dữ liệu</div>
-                <button id="btn-start" style="width: 100%; padding: 10px; border: none; border-radius: 6px; background: #FF5722; color: white; cursor: pointer; font-weight: bold; font-size: 12px;">GIẢI & LƯU TỰ ĐỘNG</button>
+            <div id="h-body" style="background: white; border: 1px solid #1B5E20; border-top: none; border-radius: 0 0 8px 8px; padding: 15px;">
+                <div id="h-status" style="font-size: 11px; color: #555; text-align: center; margin-bottom: 10px;">Sẵn sàng</div>
+                <button id="btn-start" style="width: 100%; padding: 10px; border: none; border-radius: 6px; background: #E64A19; color: white; cursor: pointer; font-weight: bold; font-size: 12px;">GIẢI & LƯU TỰ ĐỘNG</button>
             </div>
         `;
         document.body.appendChild(ui);
 
-        const h = document.getElementById('h-drag'), b = document.getElementById('h-body'), mi = document.getElementById('min-btn');
+        const h = document.getElementById('h-drag'), b = document.getElementById('h-body'), mi = document.getElementById('min-btn'), startBtn = document.getElementById('btn-start');
         mi.onclick = (e) => { b.style.display = b.style.display === 'none' ? 'block' : 'none'; mi.innerText = b.style.display === 'none' ? '+' : '−'; };
 
         let drag = false, sx, sy;
@@ -76,17 +73,20 @@
         };
         h.addEventListener('mousedown', (e) => { drag = true; sx = e.clientX - ui.offsetLeft; sy = e.clientY - ui.offsetTop; });
         h.addEventListener('touchstart', (e) => { drag = true; sx = e.touches[0].clientX - ui.offsetLeft; sy = e.touches[0].clientY - ui.offsetTop; });
-        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive: false});
         window.addEventListener('mouseup', () => drag = false); window.addEventListener('touchend', () => drag = false);
+        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive: false});
 
-        document.getElementById('btn-start').onclick = function() {
-            if(solutionMap.size === 0) return alert("Chưa có dữ liệu!");
-            isAutoSolveEnabled = true; this.innerText = "ĐANG GIẢI...";
+        startBtn.onclick = function() {
+            if(solutionMap.size === 0 && skillMap.size === 0) return alert("Chưa có dữ liệu!");
+            isAutoSolveEnabled = true;
+            this.innerText = "ĐANG GIẢI...";
+            this.disabled = true;
+            this.style.opacity = "0.7";
             turboLoadAll();
         };
     }
 
-    // --- 3. GIẢI MÃ & XỬ LÝ DỮ LIỆU ---
+    // --- 3. GIẢI MÃ DỮ LIỆU ---
     function decrypt(s) {
         try {
             const b = atob(s); let d = "";
@@ -104,27 +104,39 @@
             const sol = { fill: [], mcq: [], tf: new Set() };
             const doc = new DOMParser().parseFromString(html, 'text/html');
 
+            doc.querySelectorAll('[id-curriculum-skill]').forEach(el => {
+                const skillId = el.getAttribute('id-curriculum-skill');
+                const inp = el.querySelector('input[data-accept]');
+                if (inp) skillMap.set(skillId, { type: 'fill', ans: inp.getAttribute('data-accept'), qId: qId });
+                
+                if (el.classList.contains('quiz-list')) {
+                    const corrects = [];
+                    el.querySelectorAll('li, .qselect').forEach((item, idx) => {
+                        if (item.classList.contains('correctAnswer') || item.querySelector('.correctAnswer')) {
+                            corrects.push(item.getAttribute('data-ind') || idx.toString());
+                        }
+                    });
+                    skillMap.set(skillId, { type: 'mcq', ans: corrects, qId: qId });
+                }
+            });
+
             doc.querySelectorAll('input[data-accept]').forEach(inp => sol.fill.push(inp.getAttribute('data-accept')));
             doc.querySelectorAll('.quiz-list').forEach(list => {
                 const corrects = [];
                 list.querySelectorAll('li, .qselect').forEach((el, idx) => {
-                    if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) {
-                        corrects.push(el.getAttribute('data-ind') || idx.toString());
-                    }
+                    if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) corrects.push(el.getAttribute('data-ind') || idx.toString());
                 });
                 sol.mcq.push(corrects);
             });
             doc.querySelectorAll('.tf-row, .true-false li').forEach((el, idx) => {
-                if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) {
-                    sol.tf.add(el.getAttribute('data-id') || idx.toString());
-                }
+                if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) sol.tf.add(el.getAttribute('data-id') || idx.toString());
             });
             solutionMap.set(qId, sol);
         });
-        if(document.getElementById('h-status')) document.getElementById('h-status').innerText = `Đã nạp: ${solutionMap.size} câu`;
+        const status = document.getElementById('h-status');
+        if(status) status.innerText = `Đã nạp: ${solutionMap.size} câu`;
     }
 
-    // --- 4. THAY THẾ PARAM ---
     function getFinalValue(raw, qId) {
         if (!raw) return "";
         let val = raw;
@@ -136,70 +148,100 @@
         return val.replace(/\$/g, '').split('||')[0].split(';')[0].trim();
     }
 
-    // --- 5. VÒNG LẶP ĐIỀN BÀI ---
+    // --- 4. VÒNG LẶP ĐIỀN BÀI (LOGIC TÁCH BIỆT TRIỆT ĐỂ) ---
     setInterval(() => {
-        if (!isAutoSolveEnabled || isReviewing || solutionMap.size === 0) return;
+        if (!isAutoSolveEnabled || isReviewing) return;
         let anyAct = false;
-        let count = 0;
+        let totalFound = 0;
 
+        // 4.1 ĐIỀN MIXED (Theo id-curriculum-skill)
+        document.querySelectorAll('[id-curriculum-skill]').forEach(el => {
+            const sid = el.getAttribute('id-curriculum-skill');
+            if (sid && skillMap.has(sid)) {
+                const data = skillMap.get(sid);
+                const inp = el.querySelector('input[type="text"]');
+                if (data.type === 'fill' && inp) {
+                    const realVal = getFinalValue(data.ans, data.qId);
+                    if (inp.value.trim() !== realVal.toString()) {
+                        const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+                        s.call(inp, realVal);
+                        ['input', 'change', 'blur'].forEach(t => inp.dispatchEvent(new Event(t, {bubbles:true})));
+                        anyAct = true;
+                    }
+                }
+                if (data.type === 'mcq') {
+                    el.querySelectorAll('.qselect').forEach(opt => {
+                        const ind = opt.getAttribute('data-ind');
+                        if (data.ans.includes(ind) && !opt.classList.contains('qchecked')) {
+                            opt.click(); anyAct = true;
+                        }
+                    });
+                }
+            }
+        });
+
+        // 4.2 ĐIỀN STANDARD (Chỉ điền những ô KHÔNG thuộc Mixed)
         solutionMap.forEach((sol, id) => {
             const box = document.querySelector(`[data-id-quiz="${id}"], #user-test-${id}`);
             if (!box) return;
-            count++;
+            totalFound++;
 
             const filter = (el) => !el.closest('.exp, .showExp, .quiz-correct');
 
-            // 1. ĐIỀN TỪ
-            const inputs = Array.from(box.querySelectorAll('input[type="text"]:not(.search-input)')).filter(filter);
+            const inputs = Array.from(box.querySelectorAll('input[type="text"]:not(.search-input)'))
+                               .filter(el => filter(el) && !el.closest('[id-curriculum-skill]'));
+
             sol.fill.forEach((v, i) => {
-                const realVal = getFinalValue(v, id);
-                if (inputs[i] && inputs[i].value.trim() !== realVal.toString()) {
-                    const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-                    s.call(inputs[i], realVal);
-                    ['input', 'change', 'blur'].forEach(t => inputs[i].dispatchEvent(new Event(t, {bubbles:true})));
-                    anyAct = true;
+                if (inputs[i]) {
+                    const realVal = getFinalValue(v, id);
+                    if (inputs[i].value.trim() !== realVal.toString()) {
+                        const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+                        s.call(inputs[i], realVal);
+                        ['input', 'change', 'blur'].forEach(t => inputs[i].dispatchEvent(new Event(t, {bubbles:true})));
+                        anyAct = true;
+                    }
                 }
             });
 
-            // 2. TRẮC NGHIỆM
-            const lists = Array.from(box.querySelectorAll('.quiz-list')).filter(filter);
+            // TƯƠNG TỰ VỚI MCQ
+            const lists = Array.from(box.querySelectorAll('.quiz-list'))
+                               .filter(el => filter(el) && !el.hasAttribute('id-curriculum-skill'));
             lists.forEach((l, idx) => {
                 if (!sol.mcq[idx]) return;
                 l.querySelectorAll('.qselect').forEach(opt => {
-                    if (sol.mcq[idx].includes(opt.getAttribute('data-ind')) && !opt.classList.contains('qchecked')) {
+                    const ind = opt.getAttribute('data-ind');
+                    if (sol.mcq[idx].includes(ind) && !opt.classList.contains('qchecked')) {
                         opt.click(); anyAct = true;
                     }
                 });
             });
-
-            // 3. ĐÚNG/SAI (TRUE/FALSE)
-            const tfs = Array.from(box.querySelectorAll('.tf-row, .true-false li')).filter(filter);
-            tfs.forEach((r, idx) => {
-                const rid = r.getAttribute('data-id') || idx.toString();
-                const btn = r.querySelector('.qselect');
-                if (btn && btn.getAttribute('data-state') !== (sol.tf.has(rid) ? "1" : "0")) {
-                    btn.click(); anyAct = true;
-                }
-            });
         });
 
-        if (!anyAct && count > 0) autoSave();
-    }, 1500);
+        if (!anyAct && (totalFound > 0 || skillMap.size > 0)) autoSave();
+    }, 2000);
 
     function turboLoadAll() {
         if (hasTriggeredLoad) return;
         hasTriggeredLoad = true;
         const btns = document.querySelectorAll('#question-list .item-q');
+        if (btns.length === 0) return;
         btns.forEach((b, i) => setTimeout(() => { b.click(); if(i === btns.length-1) setTimeout(() => btns[0].click(), 300); }, i * 150));
     }
 
     function autoSave() {
         if (isReviewing) return;
         isReviewing = true; isAutoSolveEnabled = false;
-        const status = document.getElementById('h-status');
-        status.innerText = "💾 Đang nộp bài...";
+        const status = document.getElementById('h-status'), startBtn = document.getElementById('btn-start');
+        if(status) status.innerText = "💾 Đang nộp bài...";
         const btns = document.querySelectorAll('#question-list .item-q');
-        btns.forEach((b, i) => setTimeout(() => { b.click(); if (i === btns.length - 1) status.innerHTML = "<b style='color:green'>XONG!</b>"; }, i * 150));
+        if (btns.length === 0) return finishAction(status, startBtn);
+        btns.forEach((b, i) => setTimeout(() => { b.click(); if (i === btns.length - 1) finishAction(status, startBtn); }, i * 150));
+    }
+
+    function finishAction(status, btn) {
+        if(status) status.innerHTML = "<b style='color:green'>HOÀN TẤT ✅</b>";
+        if(btn) { btn.innerText = "GIẢI & LƯU TỰ ĐỘNG"; btn.disabled = false; btn.style.opacity = "1"; }
+        isReviewing = false; hasTriggeredLoad = false;
     }
 
     const rawXHR = window.XMLHttpRequest;
@@ -213,9 +255,6 @@
         return xhr;
     };
 
-    const check = setInterval(() => {
-        if (window.detectQuestion) { hookOLM(); clearInterval(check); }
-    }, 100);
-
+    const check = setInterval(() => { if (window.detectQuestion) { hookOLM(); clearInterval(check); } }, 100);
     window.addEventListener('load', createUI);
 })();
