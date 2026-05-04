@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OLM Auto Solver
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.2.0
 // @updateURL    https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
 // @downloadURL  https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
 // @description  Chống phát hiện chuyển tab. Tự động giải các dạng bài tập trên OLM (Trắc nghiệm, Điền từ, Đúng sai). Hỗ trợ tốt câu hỏi hỗn hợp (Mixed).
@@ -16,7 +16,7 @@
 
     const XOR_KEY = "1047823200";
     const solutionMap = new Map();
-    const skillMap = new Map(); 
+    const skillMap = new Map();
     const capturedBosses = new Map();
     let isAutoSolveEnabled = false;
     let hasTriggeredLoad = false;
@@ -43,7 +43,7 @@
         };
     };
 
-    // --- 2. UI ---
+    // --- 2. GIAO DIỆN ---
     function createUI() {
         if (document.getElementById('olm-solver-ui')) return;
         const ui = document.createElement('div');
@@ -51,7 +51,7 @@
         ui.style = "position: fixed; top: 20px; right: 20px; z-index: 10000; font-family: sans-serif; touch-action: none; user-select: none;";
         ui.innerHTML = `
             <div id="h-drag" style="background: #1B5E20; color: white; padding: 12px; border-radius: 8px 8px 0 0; cursor: move; display: flex; justify-content: space-between; align-items: center; min-width: 210px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.1.1</span>
+                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.2.0</span>
                 <span id="min-btn" style="cursor: pointer; padding: 0 5px;">−</span>
             </div>
             <div id="h-body" style="background: white; border: 1px solid #1B5E20; border-top: none; border-radius: 0 0 8px 8px; padding: 15px;">
@@ -77,9 +77,9 @@
         window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive: false});
 
         startBtn.onclick = function() {
-            if(solutionMap.size === 0 && skillMap.size === 0) return alert("Chưa có dữ liệu!");
+            if(solutionMap.size === 0 && skillMap.size === 0) return alert("Chưa nạp dữ liệu!");
             isAutoSolveEnabled = true;
-            this.innerText = "ĐANG GIẢI...";
+            this.innerText = "ĐANG THỰC THI...";
             this.disabled = true;
             this.style.opacity = "0.7";
             turboLoadAll();
@@ -101,14 +101,18 @@
             const html = decrypt(q.content || q.json_content);
             if (!html) return;
             const qId = (q.id || q._id).toString();
-            const sol = { fill: [], mcq: [], tf: new Set() };
+            const sol = { fill: [], mcq: [], tf: [] };
             const doc = new DOMParser().parseFromString(html, 'text/html');
 
+            // --- CHIẾN THUẬT 1: MIXED QUESTION MAPPING ---
             doc.querySelectorAll('[id-curriculum-skill]').forEach(el => {
                 const skillId = el.getAttribute('id-curriculum-skill');
+
+                // Mixed Fill
                 const inp = el.querySelector('input[data-accept]');
                 if (inp) skillMap.set(skillId, { type: 'fill', ans: inp.getAttribute('data-accept'), qId: qId });
-                
+
+                // Mixed MCQ
                 if (el.classList.contains('quiz-list')) {
                     const corrects = [];
                     el.querySelectorAll('li, .qselect').forEach((item, idx) => {
@@ -118,8 +122,15 @@
                     });
                     skillMap.set(skillId, { type: 'mcq', ans: corrects, qId: qId });
                 }
+
+                // Mixed True/False (Nếu có dòng đơn lẻ)
+                if (el.classList.contains('tf-row') || el.tagName === 'LI' && el.closest('.true-false')) {
+                    const isCorrect = el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer');
+                    if (isCorrect) skillMap.set(skillId, { type: 'tf', ans: "1", qId: qId });
+                }
             });
 
+            // --- CHIẾN THUẬT 2: STANDARD QUESTION MAPPING ---
             doc.querySelectorAll('input[data-accept]').forEach(inp => sol.fill.push(inp.getAttribute('data-accept')));
             doc.querySelectorAll('.quiz-list').forEach(list => {
                 const corrects = [];
@@ -129,7 +140,11 @@
                 sol.mcq.push(corrects);
             });
             doc.querySelectorAll('.tf-row, .true-false li').forEach((el, idx) => {
-                if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) sol.tf.add(el.getAttribute('data-id') || idx.toString());
+                if (el.classList.contains('correctAnswer') || el.querySelector('.correctAnswer')) {
+                    sol.tf.push({ id: el.getAttribute('data-id') || idx.toString(), state: "1" });
+                } else {
+                    sol.tf.push({ id: el.getAttribute('data-id') || idx.toString(), state: "0" });
+                }
             });
             solutionMap.set(qId, sol);
         });
@@ -148,7 +163,7 @@
         return val.replace(/\$/g, '').split('||')[0].split(';')[0].trim();
     }
 
-    // --- 4. VÒNG LẶP ĐIỀN BÀI (LOGIC TÁCH BIỆT TRIỆT ĐỂ) ---
+    // --- 4. VÒNG LẶP THỰC THI (ĐÃ KHÔI PHỤC ĐÚNG/SAI) ---
     setInterval(() => {
         if (!isAutoSolveEnabled || isReviewing) return;
         let anyAct = false;
@@ -159,6 +174,8 @@
             const sid = el.getAttribute('id-curriculum-skill');
             if (sid && skillMap.has(sid)) {
                 const data = skillMap.get(sid);
+
+                // Fill Mixed
                 const inp = el.querySelector('input[type="text"]');
                 if (data.type === 'fill' && inp) {
                     const realVal = getFinalValue(data.ans, data.qId);
@@ -169,6 +186,7 @@
                         anyAct = true;
                     }
                 }
+                // MCQ Mixed
                 if (data.type === 'mcq') {
                     el.querySelectorAll('.qselect').forEach(opt => {
                         const ind = opt.getAttribute('data-ind');
@@ -177,20 +195,27 @@
                         }
                     });
                 }
+                // True/False Mixed
+                if (data.type === 'tf') {
+                    const btn = el.querySelector('.qselect');
+                    if (btn && btn.getAttribute('data-state') !== data.ans) {
+                        btn.click(); anyAct = true;
+                    }
+                }
             }
         });
 
-        // 4.2 ĐIỀN STANDARD (Chỉ điền những ô KHÔNG thuộc Mixed)
+        // 4.2 ĐIỀN STANDARD (Bỏ qua các ô thuộc Mixed)
         solutionMap.forEach((sol, id) => {
             const box = document.querySelector(`[data-id-quiz="${id}"], #user-test-${id}`);
             if (!box) return;
             totalFound++;
 
-            const filter = (el) => !el.closest('.exp, .showExp, .quiz-correct');
+            const filter = (el) => !el.closest('.exp, .showExp, .quiz-correct, .quiz-exp');
 
+            // Standard Fill
             const inputs = Array.from(box.querySelectorAll('input[type="text"]:not(.search-input)'))
                                .filter(el => filter(el) && !el.closest('[id-curriculum-skill]'));
-
             sol.fill.forEach((v, i) => {
                 if (inputs[i]) {
                     const realVal = getFinalValue(v, id);
@@ -203,22 +228,35 @@
                 }
             });
 
-            // TƯƠNG TỰ VỚI MCQ
+            // Standard MCQ
             const lists = Array.from(box.querySelectorAll('.quiz-list'))
                                .filter(el => filter(el) && !el.hasAttribute('id-curriculum-skill'));
             lists.forEach((l, idx) => {
-                if (!sol.mcq[idx]) return;
-                l.querySelectorAll('.qselect').forEach(opt => {
-                    const ind = opt.getAttribute('data-ind');
-                    if (sol.mcq[idx].includes(ind) && !opt.classList.contains('qchecked')) {
-                        opt.click(); anyAct = true;
+                if (sol.mcq[idx]) {
+                    l.querySelectorAll('.qselect').forEach(opt => {
+                        const ind = opt.getAttribute('data-ind');
+                        if (sol.mcq[idx].includes(ind) && !opt.classList.contains('qchecked')) {
+                            opt.click(); anyAct = true;
+                        }
+                    });
+                }
+            });
+
+            // Standard True/False
+            const tfs = Array.from(box.querySelectorAll('.tf-row, .true-false li'))
+                             .filter(el => filter(el) && !el.hasAttribute('id-curriculum-skill'));
+            tfs.forEach((row, i) => {
+                if (sol.tf[i]) {
+                    const btn = row.querySelector('.qselect');
+                    if (btn && btn.getAttribute('data-state') !== sol.tf[i].state) {
+                        btn.click(); anyAct = true;
                     }
-                });
+                }
             });
         });
 
         if (!anyAct && (totalFound > 0 || skillMap.size > 0)) autoSave();
-    }, 2000);
+    }, 1800);
 
     function turboLoadAll() {
         if (hasTriggeredLoad) return;
