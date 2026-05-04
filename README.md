@@ -16,7 +16,7 @@ ___
 
 ### 🚀 Getting Started
 #### **PC**
-[Tutorial](https://drive.google.com/file/d/1OLtmIXBKS7GJlUweoAigS0p7rM_RmjTX/view?usp=drive_link)
+[Tutorial](https://drive.google.com/file/d/1FtXN2AMTbz8uYk_dJWZ4q6F-p3KrdN23/view?usp=drive_link)
 #### 1. Prerequisites
 A compatible userscript manager must be installed in your browser to execute this tool.
 *   **Recommended:** [Tampermonkey](https://www.tampermonkey.net/)

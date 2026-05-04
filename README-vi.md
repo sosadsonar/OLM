@@ -15,7 +15,7 @@ ___
 
 ### 🚀 Hướng dẫn cài đặt
 #### **PC**
-[Hướng dẫn](https://drive.google.com/file/d/1OLtmIXBKS7GJlUweoAigS0p7rM_RmjTX/view?usp=drive_link)
+[Hướng dẫn](https://drive.google.com/file/d/1FtXN2AMTbz8uYk_dJWZ4q6F-p3KrdN23/view?usp=drive_link)
 #### 1. Yêu cầu hệ thống
 Để thực thi script, bạn cần cài đặt một trình quản lý userscript trên trình duyệt:
 *   **Khuyên dùng:** [Tampermonkey](https://www.tampermonkey.net/)
