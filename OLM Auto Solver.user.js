@@ -1,8 +1,7 @@
-
 // ==UserScript==
 // @name         OLM Auto Solver
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @updateURL    https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
 // @downloadURL  https://github.com/sosadsonar/OLM/releases/latest/download/OLM.Auto.Solver.user.js
 // @description  Chống phát hiện chuyển tab. Tự động giải các dạng bài tập trên OLM (Trắc nghiệm, Điền từ, Đúng sai). Hỗ trợ tốt câu hỏi hỗn hợp (Mixed).
@@ -19,6 +18,10 @@
     const solutionMap = new Map();
     const skillMap = new Map();
     const capturedBosses = new Map();
+
+    // Set dùng để theo dõi chính xác các câu hỏi/ô điền ĐÃ ĐƯỢC XỬ LÝ
+    const solvedElements = new Set();
+
     let isAutoSolveEnabled = false;
     let hasTriggeredLoad = false;
     let isReviewing = false;
@@ -52,7 +55,7 @@
         ui.style = "position: fixed; top: 20px; right: 20px; z-index: 10000; font-family: sans-serif; touch-action: none; user-select: none;";
         ui.innerHTML = `
             <div id="h-drag" style="background: #1B5E20; color: white; padding: 12px; border-radius: 8px 8px 0 0; cursor: move; display: flex; justify-content: space-between; align-items: center; min-width: 210px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.2.0</span>
+                <span style="font-weight: bold; font-size: 13px;">OLM Solver v1.2.1</span>
                 <span id="min-btn" style="cursor: pointer; padding: 0 5px;">−</span>
             </div>
             <div id="h-body" style="background: white; border: 1px solid #1B5E20; border-top: none; border-radius: 0 0 8px 8px; padding: 15px;">
@@ -85,6 +88,14 @@
             this.style.opacity = "0.7";
             turboLoadAll();
         };
+    }
+
+    // Cập nhật nhãn đếm trực tiếp từ số lượng câu/ô đã giải thành công
+    function updateSolvedCountUI() {
+        const status = document.getElementById('h-status');
+        if (status && isAutoSolveEnabled) {
+            status.innerText = `Đã giải: ${solvedElements.size} câu`;
+        }
     }
 
     // --- 3. GIẢI MÃ DỮ LIỆU ---
@@ -149,8 +160,11 @@
             });
             solutionMap.set(qId, sol);
         });
+
         const status = document.getElementById('h-status');
-        if(status) status.innerText = `Đã nạp: ${solutionMap.size} câu`;
+        if (status && !isAutoSolveEnabled) {
+            status.innerText = `Đã nạp dữ liệu xong`;
+        }
     }
 
     function getFinalValue(raw, qId) {
@@ -164,7 +178,7 @@
         return val.replace(/\$/g, '').split('||')[0].split(';')[0].trim();
     }
 
-    // --- 4. VÒNG LẶP THỰC THI (ĐÃ KHÔI PHỤC ĐÚNG/SAI) ---
+    // --- 4. VÒNG LẶP THỰC THI ---
     setInterval(() => {
         if (!isAutoSolveEnabled || isReviewing) return;
         let anyAct = false;
@@ -186,6 +200,7 @@
                         ['input', 'change', 'blur'].forEach(t => inp.dispatchEvent(new Event(t, {bubbles:true})));
                         anyAct = true;
                     }
+                    solvedElements.add(`mixed-fill-${sid}`);
                 }
                 // MCQ Mixed
                 if (data.type === 'mcq') {
@@ -195,6 +210,7 @@
                             opt.click(); anyAct = true;
                         }
                     });
+                    solvedElements.add(`mixed-mcq-${sid}`);
                 }
                 // True/False Mixed
                 if (data.type === 'tf') {
@@ -202,6 +218,7 @@
                     if (btn && btn.getAttribute('data-state') !== data.ans) {
                         btn.click(); anyAct = true;
                     }
+                    solvedElements.add(`mixed-tf-${sid}`);
                 }
             }
         });
@@ -226,6 +243,7 @@
                         ['input', 'change', 'blur'].forEach(t => inputs[i].dispatchEvent(new Event(t, {bubbles:true})));
                         anyAct = true;
                     }
+                    solvedElements.add(`std-fill-${id}-${i}`);
                 }
             });
 
@@ -240,6 +258,7 @@
                             opt.click(); anyAct = true;
                         }
                     });
+                    solvedElements.add(`std-mcq-${id}-${idx}`);
                 }
             });
 
@@ -252,9 +271,13 @@
                     if (btn && btn.getAttribute('data-state') !== sol.tf[i].state) {
                         btn.click(); anyAct = true;
                     }
+                    solvedElements.add(`std-tf-${id}-${i}`);
                 }
             });
         });
+
+        // Cập nhật số liệu hiển thị trên giao diện
+        updateSolvedCountUI();
 
         if (!anyAct && (totalFound > 0 || skillMap.size > 0)) autoSave();
     }, 1800);
@@ -271,14 +294,14 @@
         if (isReviewing) return;
         isReviewing = true; isAutoSolveEnabled = false;
         const status = document.getElementById('h-status'), startBtn = document.getElementById('btn-start');
-        if(status) status.innerText = "💾 Đang nộp bài...";
+        if(status) status.innerText = `💾 Đang nộp bài... (Tổng: ${solvedElements.size} câu)`;
         const btns = document.querySelectorAll('#question-list .item-q');
         if (btns.length === 0) return finishAction(status, startBtn);
         btns.forEach((b, i) => setTimeout(() => { b.click(); if (i === btns.length - 1) finishAction(status, startBtn); }, i * 150));
     }
 
     function finishAction(status, btn) {
-        if(status) status.innerHTML = "<b style='color:green'>HOÀN TẤT ✅</b>";
+        if(status) status.innerHTML = `<b style='color:green'>HOÀN TẤT ✅ (${solvedElements.size} câu)</b>`;
         if(btn) { btn.innerText = "GIẢI & LƯU TỰ ĐỘNG"; btn.disabled = false; btn.style.opacity = "1"; }
         isReviewing = false; hasTriggeredLoad = false;
     }
