@@ -1,3 +1,4 @@
+
 // ==UserScript==
 // @name         OLM Auto Solver
 // @namespace    http://tampermonkey.net/
